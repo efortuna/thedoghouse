@@ -3,9 +3,10 @@ import 'package:http/http.dart' as http;
 import 'package:rxdart/rxdart.dart';
 
 class Doggo {
-  Doggo(this.name, this.detailsUrl);
+  Doggo(this.name, this.description, this.detailsUrl);
   final String detailsUrl;
   final String name;
+  final String description;
 }
 
 class Doggos {
@@ -39,7 +40,7 @@ class AdoptableDoggos extends Stream<List<Doggo>> {
     // TODO: error checking.
     //var doc = xml.parse(response.body);
     //TODO actual data!
-    var list = List.generate(10, (_) => Doggo('Fido', 'https://www.adoptapet.com/pet/23665138-seattle-washington-german-shepherd-dog'));
+    var list = List.generate(10, (_) => Doggo('Fido', 'super cute pomeranian', 'https://www.adoptapet.com/pet/23665138-seattle-washington-german-shepherd-dog'));
     _controller.add(list);
   }
 }
