@@ -3,14 +3,60 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:async';
 
+import 'package:the_doghouse/data.dart';
+
 void main() => runApp(MaterialApp(
-    home: FullDogView(
-        initialUrl:
-            'https://www.adoptapet.com/pet/23665138-seattle-washington-german-shepherd-dog')));
+    home: Scaffold(
+      appBar: AppBar(title: Text("Who's in the dog house?")),
+      body: DogList())));
+
+class DogList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<List<Doggo>>(
+              stream: Doggos().stream,
+              initialData: <Doggo>[],
+              builder: (context, snapshot) => ListView(
+                    children: snapshot.data
+                        .map((dog) => _buildItem(dog, context))
+                        .toList(),
+                  ),
+            );
+  }
+
+  Widget _buildItem(Doggo dog, BuildContext context) {
+    return ExpansionTile(
+      title: Text(dog.name),
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Text('a picture here'),
+                  IconButton(
+                    icon: Icon(Icons.launch),
+                    onPressed: () async {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FullDogView(dog: dog,)));
+                    },
+                  )
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 class FullDogView extends StatefulWidget {
-  FullDogView({this.initialUrl});
-  final String initialUrl;
+  FullDogView({this.dog});
+  final Doggo dog;
   @override
   _FullDogViewState createState() => _FullDogViewState();
 }
@@ -30,7 +76,8 @@ class _FullDogViewState extends State<FullDogView> {
         ],
       ),
       body: WebView(
-        initialUrl: widget.initialUrl,
+        initialUrl: widget.dog.detailsUrl,
+        // TODO(efortuna): This site requres javascript. Other adoption site that doesn't? 
         javaScriptMode: JavaScriptMode.unrestricted,
         onWebViewCreated: (WebViewController webViewController) {
           _controller.complete(webViewController);
@@ -51,7 +98,7 @@ class _FullDogViewState extends State<FullDogView> {
               var url = await controller.data.currentUrl();
               _favorites.add(url);
               Scaffold.of(context).showSnackBar(
-                SnackBar(content: Text('Saved $url for later reading.')),
+                SnackBar(content: Text('Favorited ${widget.dog.name}!')),
               );
             },
             child: Icon(Icons.favorite),
