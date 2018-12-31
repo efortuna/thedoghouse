@@ -17,11 +17,38 @@ class Doggo {
   @JsonKey(name: "petId")
   final int id;
   final String name;
-//  final String description;
+  final Breeds breeds;
+  final Media media;
 
-  Doggo(this.name, this.id);
+  Doggo(this.name, this.id, this.breeds, this.media);
 
   factory Doggo.fromJson(Map<String, dynamic> json) => _$DoggoFromJson(json);
 }
 
-//class Breed {}
+@JsonSerializable()
+class Breeds {
+  final String primaryBreedName;
+  final String secondaryBreedName;
+
+  Breeds(this.primaryBreedName, this.secondaryBreedName);
+
+  factory Breeds.fromJson(Map<String, dynamic> json) => _$BreedsFromJson(json);
+}
+
+@JsonSerializable()
+class Media {
+  final List<ImageUrl> images;
+
+  Media(this.images);
+
+  factory Media.fromJson(Map<String, dynamic> json) => _$MediaFromJson(json);
+}
+
+@JsonSerializable()
+class ImageUrl {
+  final String url;
+
+  ImageUrl(this.url);
+
+  factory ImageUrl.fromJson(Map<String, dynamic> json) => _$ImageFromJson(json);
+}

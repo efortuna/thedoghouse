@@ -40,8 +40,7 @@ class DogList extends StatelessWidget {
   Widget _buildItem(Doggo dog, BuildContext context) {
     return ExpansionTile(
       leading: const Icon(FontAwesomeIcons.paw),
-//      title: Text(dog.description),
-      title: Text("breed description"),
+      title: Text(dog.breeds.primaryBreedName),
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -50,7 +49,7 @@ class DogList extends StatelessWidget {
               Row(
                 children: <Widget>[
                   Text('Name: ${dog.name}'),
-                  Text('some picture here'),
+                  Image.network(dog.media.images.first.url),
                   IconButton(
                     icon: Icon(Icons.launch),
                     onPressed: () async {
