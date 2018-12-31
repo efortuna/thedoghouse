@@ -1,13 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:rxdart/rxdart.dart';
-
-class Doggo {
-  Doggo(this.name, this.description, this.detailsUrl);
-  final String detailsUrl;
-  final String name;
-  final String description;
-}
+import 'package:the_doghouse/model.dart';
 
 class Doggos {
   Doggos() : _stream = AdoptableDoggos() {
@@ -35,12 +30,13 @@ class AdoptableDoggos extends Stream<List<Doggo>> {
   }
 
   _fetchDoggos() async {
-    // Or http://www.dogsblog.com/feed/
-    var response = await http.get('http://www.dogsonly.org/feed.xml');
+    var response = await http.get('https://ra-api.adoptapet.com/v1/pets/featured?location=32830&type=dog-adoption');
+    Map json = jsonDecode(response.body);
+    var list = Response.fromJson(json);
     // TODO: error checking.
     //var doc = xml.parse(response.body);
     //TODO actual data!
-    var list = List.generate(10, (_) => Doggo('Fido', 'super cute pomeranian', 'https://www.adoptapet.com/pet/23665138-seattle-washington-german-shepherd-dog'));
-    _controller.add(list);
+//    var list = List.generate(10, (_) => Doggo('Fido', 'https://www.adoptapet.com/pet/23665138-seattle-washington-german-shepherd-dog'));
+    _controller.add(list.body);
   }
 }

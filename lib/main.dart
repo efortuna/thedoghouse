@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:the_doghouse/model.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -39,7 +40,8 @@ class DogList extends StatelessWidget {
   Widget _buildItem(Doggo dog, BuildContext context) {
     return ExpansionTile(
       leading: const Icon(FontAwesomeIcons.paw),
-      title: Text(dog.description),
+//      title: Text(dog.description),
+      title: Text("breed description"),
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -97,7 +99,7 @@ class _FullDogViewState extends State<FullDogView> {
         ],
       ),
       body: WebView(
-        initialUrl: widget.dog.detailsUrl,
+        initialUrl: widget.dog.id.toString(),
         // TODO(efortuna): This site requres javascript. Other adoption site that doesn't?
         javaScriptMode: JavaScriptMode.unrestricted,
         onWebViewCreated: (WebViewController webViewController) {
