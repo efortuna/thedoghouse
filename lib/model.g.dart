@@ -24,14 +24,18 @@ Doggo _$DoggoFromJson(Map<String, dynamic> json) {
           : Breeds.fromJson(json['breeds'] as Map<String, dynamic>),
       json['media'] == null
           ? null
-          : Media.fromJson(json['media'] as Map<String, dynamic>));
+          : Media.fromJson(json['media'] as Map<String, dynamic>),
+      json['age'] as String,
+      json['sex'] as String);
 }
 
 Map<String, dynamic> _$DoggoToJson(Doggo instance) => <String, dynamic>{
       'petId': instance.id,
       'name': instance.name,
       'breeds': instance.breeds,
-      'media': instance.media
+      'media': instance.media,
+      'age': instance.age,
+      'sex': instance.gender
     };
 
 Breeds _$BreedsFromJson(Map<String, dynamic> json) {
@@ -46,16 +50,17 @@ Map<String, dynamic> _$BreedsToJson(Breeds instance) => <String, dynamic>{
 
 Media _$MediaFromJson(Map<String, dynamic> json) {
   return Media((json['images'] as List)
-      ?.map((e) => e == null ? null : ImageUrl.fromJson(e as Map<String, dynamic>))
+      ?.map((e) =>
+          e == null ? null : ImageUrl.fromJson(e as Map<String, dynamic>))
       ?.toList());
 }
 
 Map<String, dynamic> _$MediaToJson(Media instance) =>
     <String, dynamic>{'images': instance.images};
 
-ImageUrl _$ImageFromJson(Map<String, dynamic> json) {
+ImageUrl _$ImageUrlFromJson(Map<String, dynamic> json) {
   return ImageUrl(json['url'] as String);
 }
 
-Map<String, dynamic> _$ImageToJson(ImageUrl instance) =>
+Map<String, dynamic> _$ImageUrlToJson(ImageUrl instance) =>
     <String, dynamic>{'url': instance.url};

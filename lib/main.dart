@@ -52,8 +52,8 @@ class DogList extends StatelessWidget {
               ),
               Column(
                 children: <Widget>[
-                  Text('Age: age'),
-                  Text('Sex: sex'),
+                  Text('Age: ${dog.age}'),
+                  Text('Gender: ${dog.gender}'),
                   InkWell(
                     onTap: () async {
                       Navigator.push(

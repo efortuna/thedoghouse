@@ -19,8 +19,11 @@ class Doggo {
   final String name;
   final Breeds breeds;
   final Media media;
+  final String age;
+  @JsonKey(name: "sex")
+  final String gender;
 
-  Doggo(this.name, this.id, this.breeds, this.media);
+  Doggo(this.name, this.id, this.breeds, this.media, this.age, this.gender);
 
   factory Doggo.fromJson(Map<String, dynamic> json) => _$DoggoFromJson(json);
 }
@@ -50,5 +53,5 @@ class ImageUrl {
 
   ImageUrl(this.url);
 
-  factory ImageUrl.fromJson(Map<String, dynamic> json) => _$ImageFromJson(json);
+  factory ImageUrl.fromJson(Map<String, dynamic> json) => _$ImageUrlFromJson(json);
 }
