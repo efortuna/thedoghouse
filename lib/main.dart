@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:the_doghouse/data.dart';
 import 'package:the_doghouse/model.dart';
+import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 void main() => runApp(MaterialApp(
       theme: ThemeData(
@@ -47,38 +47,53 @@ class DogList extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
             children: <Widget>[
-              Container(
-                height: 120,
-                child: FadeInImage.memoryNetwork(
-                  placeholder: kTransparentImage,
-                  image: dog.media.images.first.url,
-                ),
-              ),
-              Column(
-                children: <Widget>[
-                  Text('Age: ${dog.age}'),
-                  Text('Gender: ${dog.gender}'),
-                  InkWell(
-                    onTap: () async {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => FullDogView(
-                                  dog: dog,
-                                ),
-                          ));
-                    },
-                    child: Row(
-                      children: <Widget>[Text('Adopt me!'), Icon(Icons.launch)],
-                    ),
-                  )
-                ],
-              )
+              _dogImage(dog),
+              _dogDescription(dog, context)
             ],
           ),
         ),
       ],
     );
+  }
+
+  Column _dogDescription(Doggo dog, BuildContext context) {
+    return Column(
+              children: <Widget>[
+                Text('Age: ${dog.age}'),
+                Text('Gender: ${dog.gender}'),
+                _buttonOpenWebView(context, dog)
+              ],
+            );
+  }
+
+  InkWell _buttonOpenWebView(BuildContext context, Doggo dog) {
+    return InkWell(
+                  onTap: () async {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FullDogView(
+                                dog: dog,
+                              ),
+                        ));
+                  },
+                  child: Row(
+                    children: <Widget>[Text('Adopt me!'), Icon(Icons.launch)],
+                  ),
+                );
+  }
+
+  Container _dogImage(Doggo dog) {
+    return Container(
+              height: 120.0,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16.0),
+                child: FadeInImage.memoryNetwork(
+                  placeholder: kTransparentImage,
+                  image: dog.media.images.first.url,
+                ),
+              ),
+            );
   }
 }
 
