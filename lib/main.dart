@@ -6,6 +6,7 @@ import 'package:the_doghouse/data.dart';
 import 'package:the_doghouse/model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 void main() => runApp(MaterialApp(
       theme: ThemeData(
@@ -40,15 +41,18 @@ class DogList extends StatelessWidget {
   Widget _buildItem(Doggo dog, BuildContext context) {
     return ExpansionTile(
       leading: const Icon(FontAwesomeIcons.paw),
-      title: Text(dog.breeds.primaryBreedName),
+      title: Text(dog.name + ": " + dog.breeds.primaryBreedName),
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
             children: <Widget>[
-              Image.network(
-                dog.media.images.first.url,
+              Container(
                 height: 120,
+                child: FadeInImage.memoryNetwork(
+                  placeholder: kTransparentImage,
+                  image: dog.media.images.first.url,
+                ),
               ),
               Column(
                 children: <Widget>[
@@ -65,10 +69,7 @@ class DogList extends StatelessWidget {
                           ));
                     },
                     child: Row(
-                      children: <Widget>[
-                        Text('Adopt me!'),
-                        Icon(Icons.launch)
-                      ],
+                      children: <Widget>[Text('Adopt me!'), Icon(Icons.launch)],
                     ),
                   )
                 ],
