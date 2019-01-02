@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:the_doghouse/data.dart';
+import 'package:the_doghouse/model.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 void main() => runApp(MaterialApp(
       theme: ThemeData(
@@ -39,29 +40,39 @@ class DogList extends StatelessWidget {
   Widget _buildItem(Doggo dog, BuildContext context) {
     return ExpansionTile(
       leading: const Icon(FontAwesomeIcons.paw),
-      title: Text(dog.description),
+      title: Text(dog.breeds.primaryBreedName),
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
+          child: Row(
             children: <Widget>[
-              Row(
+              Image.network(
+                dog.media.images.first.url,
+                height: 120,
+              ),
+              Column(
                 children: <Widget>[
-                  Text('Name: ${dog.name}'),
-                  Text('some picture here'),
-                  IconButton(
-                    icon: Icon(Icons.launch),
-                    onPressed: () async {
+                  Text('Age: ${dog.age}'),
+                  Text('Gender: ${dog.gender}'),
+                  InkWell(
+                    onTap: () async {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => FullDogView(
-                                    dog: dog,
-                                  )));
+                            builder: (context) => FullDogView(
+                                  dog: dog,
+                                ),
+                          ));
                     },
+                    child: Row(
+                      children: <Widget>[
+                        Text('Adopt me!'),
+                        Icon(Icons.launch)
+                      ],
+                    ),
                   )
                 ],
-              ),
+              )
             ],
           ),
         ),
@@ -72,7 +83,9 @@ class DogList extends StatelessWidget {
 
 class FullDogView extends StatefulWidget {
   FullDogView({this.dog});
+
   final Doggo dog;
+
   @override
   _FullDogViewState createState() => _FullDogViewState();
 }
@@ -97,7 +110,7 @@ class _FullDogViewState extends State<FullDogView> {
         ],
       ),
       body: WebView(
-        initialUrl: widget.dog.detailsUrl,
+        initialUrl: widget.dog.id.toString(),
         // TODO(efortuna): This site requres javascript. Other adoption site that doesn't?
         javaScriptMode: JavaScriptMode.unrestricted,
         onWebViewCreated: (WebViewController webViewController) {
@@ -134,7 +147,9 @@ class _FullDogViewState extends State<FullDogView> {
 
 class Menu extends StatelessWidget {
   Menu(this._webViewControllerFuture, this.favoritesAccessor);
+
   final Future<WebViewController> _webViewControllerFuture;
+
   // TODO(efortuna): Come up with a more elegant solution for an accessor to this than a callback.
   // This should be state stuff.
   final Function favoritesAccessor;
@@ -179,6 +194,7 @@ class Menu extends StatelessWidget {
 
 class FavoritesPage extends StatelessWidget {
   FavoritesPage(this.favorites);
+
   final Set<String> favorites;
 
   @override
