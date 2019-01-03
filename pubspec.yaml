@@ -53,9 +53,6 @@ flutter:
     - family: IndieFlower
       fonts:
       - asset: fonts/IndieFlower.ttf
-    - family: GloriaHallelujah
-      fonts:
-      - asset: fonts/GloriaHallelujah.ttf
     - family: FingerPaint
       fonts:
       - asset: fonts/FingerPaint-Regular.ttf

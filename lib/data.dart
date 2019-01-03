@@ -10,7 +10,7 @@ class Doggos {
   }
   // Use BehaviorSubject so we can always get the latest set of dogs,
   // even if there haven't been any new additions.
-  final _subject = BehaviorSubject<List<Doggo>>();
+  final _subject = BehaviorSubject<List<Doggo>>(seedValue: <Doggo>[]);
   final AdoptableDoggos _stream;
   Stream<List<Doggo>> get stream => _subject.stream;
 }

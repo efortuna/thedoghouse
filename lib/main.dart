@@ -2,11 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:the_doghouse/data.dart';
-import 'package:the_doghouse/model.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+import 'package:the_doghouse/data.dart';
+import 'package:the_doghouse/model.dart';
 
 void main() => runApp(MaterialApp(
       theme: ThemeData(
@@ -17,7 +18,7 @@ void main() => runApp(MaterialApp(
       home: DogList(),
     ));
 
-final headerStyle = TextStyle(fontFamily: 'FingerPaint');
+const headerStyle = TextStyle(fontFamily: 'FingerPaint');
 
 class DogList extends StatelessWidget {
   @override
@@ -41,7 +42,7 @@ class DogList extends StatelessWidget {
   Widget _buildItem(Doggo dog, BuildContext context) {
     return ExpansionTile(
       leading: const Icon(FontAwesomeIcons.paw),
-      title: Text(dog.name + ": " + dog.breeds.primaryBreedName),
+      title: Text('${dog.name}: ${dog.breeds.primaryBreedName}'),
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -78,25 +79,25 @@ class DogList extends StatelessWidget {
       children: <Widget>[
         Text('Age: ${dog.age}'),
         Text('Gender: ${dog.gender}'),
-        Container(height: 24.0),
         _buttonOpenWebView(context, dog)
       ],
     );
   }
 
-  InkWell _buttonOpenWebView(BuildContext context, Doggo dog) {
-    return InkWell(
-      onTap: () async {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => FullDogView(
-                    dog: dog,
-                  ),
-            ));
-      },
-      child: Row(
-        children: <Widget>[Text('Adopt me!'), Icon(Icons.launch)],
+  Widget _buttonOpenWebView(BuildContext context, Doggo dog) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 24.0),
+      child: RaisedButton(
+        onPressed: () async {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FullDogView(
+                      dog: dog,
+                    ),
+              ));
+        },
+        child: Text('Learn more about me!'),
       ),
     );
   }
@@ -122,10 +123,9 @@ class _FullDogViewState extends State<FullDogView> {
         title: Row(
           children: <Widget>[
             const Icon(FontAwesomeIcons.bone),
-            // TODO: does this need to be const?
             // TODO: use some kind of box instead of Padding Widget
             const Padding(padding: EdgeInsets.only(left: 20.0)),
-            const Text('Dog Stats'),
+            const Text('Dog Stats', style: headerStyle),
           ],
         ),
         actions: <Widget>[
@@ -145,7 +145,7 @@ class _FullDogViewState extends State<FullDogView> {
     );
   }
 
-  String _dogUrl() => "https://adoptapet.com/pet/" + widget.dog.id.toString();
+  String _dogUrl() => 'https://adoptapet.com/pet/${widget.dog.id}';
 
   _bookmarkButton() {
     return FutureBuilder<WebViewController>(
@@ -192,7 +192,7 @@ class Menu extends StatelessWidget {
             if (value == 'Email link') {
               var url = await controller.data.currentUrl();
               await launch(
-                  'mailto:?subject=Check out this cool Wikipedia page&body=$url');
+                  'mailto:?subject=Can we adopt this doggie&body=$url');
             } else {
               var newUrl = await Navigator.push(context,
                   MaterialPageRoute(builder: (BuildContext context) {
@@ -226,7 +226,7 @@ class FavoritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Favorite pages')),
+      appBar: AppBar(title: Text('Favorite dogs')),
       body: ListView(
           children: favorites
               .map((url) => ListTile(
