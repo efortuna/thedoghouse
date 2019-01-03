@@ -53,7 +53,20 @@ flutter:
     - family: IndieFlower
       fonts:
       - asset: fonts/IndieFlower.ttf
+    - family: GloriaHallelujah
+      fonts:
+      - asset: fonts/GloriaHallelujah.ttf
     - family: FingerPaint
       fonts:
       - asset: fonts/FingerPaint-Regular.ttf
+    - family: PatrickHand
+      fonts:
+      - asset: fonts/PatrickHand-Regular.ttf
+    - family: HappyMonkey
+      fonts:
+      - asset: fonts/HappyMonkey-Regular.ttf
+    - family: ComingSoon
+      fonts:
+      - asset: fonts/ComingSoon-Regular.ttf
+
 

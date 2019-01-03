@@ -12,7 +12,7 @@ void main() => runApp(MaterialApp(
       theme: ThemeData(
         primaryColor: Colors.brown,
         accentColor: Colors.deepOrange,
-        fontFamily: 'IndieFlower',
+        fontFamily: 'HappyMonkey',
       ),
       home: DogList(),
     ));

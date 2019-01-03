@@ -33,10 +33,6 @@ class AdoptableDoggos extends Stream<List<Doggo>> {
     var response = await http.get('https://ra-api.adoptapet.com/v1/pets/featured?location=32830&type=dog-adoption');
     Map json = jsonDecode(response.body);
     var list = Response.fromJson(json);
-    // TODO: error checking.
-    //var doc = xml.parse(response.body);
-    //TODO actual data!
-//    var list = List.generate(10, (_) => Doggo('Fido', 'https://www.adoptapet.com/pet/23665138-seattle-washington-german-shepherd-dog'));
     _controller.add(list.body);
   }
 }
