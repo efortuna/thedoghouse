@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:the_doghouse/data.dart';
 import 'package:the_doghouse/model.dart';
+import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -40,43 +41,63 @@ class DogList extends StatelessWidget {
   Widget _buildItem(Doggo dog, BuildContext context) {
     return ExpansionTile(
       leading: const Icon(FontAwesomeIcons.paw),
-      title: Text(dog.breeds.primaryBreedName),
+      title: Text(dog.name + ": " + dog.breeds.primaryBreedName),
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
             children: <Widget>[
-              Image.network(
-                dog.media.images.first.url,
-                height: 120,
-              ),
-              Column(
-                children: <Widget>[
-                  Text('Age: ${dog.age}'),
-                  Text('Gender: ${dog.gender}'),
-                  InkWell(
-                    onTap: () async {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => FullDogView(
-                                  dog: dog,
-                                ),
-                          ));
-                    },
-                    child: Row(
-                      children: <Widget>[
-                        Text('Adopt me!'),
-                        Icon(Icons.launch)
-                      ],
-                    ),
-                  )
-                ],
-              )
+              _dogImage(dog),
+              _dogDescription(dog, context),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget _dogImage(Doggo dog) {
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Container(
+        height: 120.0,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16.0),
+          child: FadeInImage.memoryNetwork(
+            placeholder: kTransparentImage,
+            image: dog.media.images.first.url,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _dogDescription(Doggo dog, BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text('Age: ${dog.age}'),
+        Text('Gender: ${dog.gender}'),
+        Container(height: 24.0),
+        _buttonOpenWebView(context, dog)
+      ],
+    );
+  }
+
+  InkWell _buttonOpenWebView(BuildContext context, Doggo dog) {
+    return InkWell(
+      onTap: () async {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FullDogView(
+                    dog: dog,
+                  ),
+            ));
+      },
+      child: Row(
+        children: <Widget>[Text('Adopt me!'), Icon(Icons.launch)],
+      ),
     );
   }
 }
@@ -100,8 +121,11 @@ class _FullDogViewState extends State<FullDogView> {
       appBar: AppBar(
         title: Row(
           children: <Widget>[
-            const Text('Dog Stats'),
             const Icon(FontAwesomeIcons.bone),
+            // TODO: does this need to be const?
+            // TODO: use some kind of box instead of Padding Widget
+            const Padding(padding: EdgeInsets.only(left: 20.0)),
+            const Text('Dog Stats'),
           ],
         ),
         actions: <Widget>[
@@ -110,7 +134,7 @@ class _FullDogViewState extends State<FullDogView> {
         ],
       ),
       body: WebView(
-        initialUrl: widget.dog.id.toString(),
+        initialUrl: _dogUrl(),
         // TODO(efortuna): This site requres javascript. Other adoption site that doesn't?
         javaScriptMode: JavaScriptMode.unrestricted,
         onWebViewCreated: (WebViewController webViewController) {
@@ -120,6 +144,8 @@ class _FullDogViewState extends State<FullDogView> {
       floatingActionButton: _bookmarkButton(),
     );
   }
+
+  String _dogUrl() => "https://adoptapet.com/pet/" + widget.dog.id.toString();
 
   _bookmarkButton() {
     return FutureBuilder<WebViewController>(
