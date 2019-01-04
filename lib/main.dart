@@ -8,6 +8,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import 'package:the_doghouse/data.dart';
 import 'package:the_doghouse/model.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'package:simple_future_builder/simple_future_builder.dart';
 
 void main() => runApp(MaterialApp(
       theme: ThemeData(
@@ -28,13 +30,13 @@ class DogList extends StatelessWidget {
         title: Text("Who's in the dog house?", style: headerStyle),
         leading: const Icon(FontAwesomeIcons.dog),
       ),
-      body: StreamBuilder<List<Doggo>>(
-        stream: Doggos().stream,
-        initialData: <Doggo>[],
-        builder: (context, snapshot) => ListView(
-              children:
-                  snapshot.data.map((dog) => _buildItem(dog, context)).toList(),
-            ),
+      body: SimpleFutureBuilder<List<Doggo>>(
+        future: AdoptableDoggos.fetchDoggos(),
+        builder: (context, data) => DogCache(
+            dogList: data,
+            child: ListView(
+              children: data.map((dog) => _buildItem(dog, context)).toList(),
+            )),
       ),
     );
   }
@@ -103,6 +105,16 @@ class DogList extends StatelessWidget {
   }
 }
 
+class DogFavorites extends Model {
+  Set<Doggo> _favorites;
+  DogFavorites(this._favorites);
+  // TODO: convert URL to dog info...
+
+  add(Doggo dog) {
+    _favorites.add(dog);
+  }
+}
+
 class FullDogView extends StatefulWidget {
   FullDogView({this.dog});
 
@@ -114,7 +126,6 @@ class FullDogView extends StatefulWidget {
 
 class _FullDogViewState extends State<FullDogView> {
   Completer<WebViewController> _controller = Completer<WebViewController>();
-  final Set<String> _favorites = Set<String>();
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +168,10 @@ class _FullDogViewState extends State<FullDogView> {
             backgroundColor: Colors.deepOrange,
             onPressed: () async {
               var url = await controller.data.currentUrl();
-              _favorites.add(url);
+              final model =
+                  ScopedModel.of<DogFavorites>(context, rebuildOnChange: false);
+              // TODO: does Doggos need to become an inheritedWidget to access here?
+              model.add(urlToDoggo(url));
               Scaffold.of(context).showSnackBar(
                 SnackBar(content: Text('Favorited ${widget.dog.name}!')),
               );
