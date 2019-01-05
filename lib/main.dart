@@ -46,14 +46,14 @@ class DogList extends StatelessWidget {
 
   Widget _buildItem(Doggo dog, BuildContext context) {
     return ExpansionTile(
-//      leading: const Icon(FontAwesomeIcons.paw),
+      leading: const Icon(FontAwesomeIcons.paw),
       title: Text('${dog.name}: ${dog.breeds.primaryBreedName}'),
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
             children: <Widget>[
-//              DogImage(dog),
+              DogImage(dog),
               _dogDescription(dog, context),
             ],
           ),
@@ -68,7 +68,7 @@ class DogList extends StatelessWidget {
       children: <Widget>[
         Text('Age: ${dog.age}'),
         Text('Gender: ${dog.gender}'),
-//        _buttonOpenWebView(context, dog)
+        _buttonOpenWebView(context, dog)
       ],
     );
   }
@@ -77,8 +77,9 @@ class DogList extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 24.0),
       child: RaisedButton(
-        onPressed: () async {
-
+        onPressed:() {},
+//        onPressed: () async {
+//
 //          Navigator.push(
 //              context,
 //              MaterialPageRoute(
@@ -86,7 +87,7 @@ class DogList extends StatelessWidget {
 //                      dog: dog,
 //                    ),
 //              ));
-        },
+//        },
         child: Text('Learn more about me!'),
       ),
     );
@@ -94,7 +95,6 @@ class DogList extends StatelessWidget {
 }
 
 // collapse
-
 class DogImage extends StatelessWidget {
   DogImage(this.dog);
   final Doggo dog;
