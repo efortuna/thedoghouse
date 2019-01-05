@@ -130,6 +130,9 @@ class _FullDogViewState extends State<FullDogView> {
       appBar: AppBar(
         title: Row(
           children: <Widget>[
+            const Icon(FontAwesomeIcons.bone),
+            const Padding(padding: EdgeInsets.only(left: 20.0)),
+            const Text('Dog Stats', style: headerStyle),
           ],
         ),
 //        actions: <Widget>[
