@@ -17,16 +17,10 @@ class AdoptableDoggos {
 }
 
 class DogFavorites extends Model {
-  DogFavorites(this.dogList)
-      : doggoLookup = dogList.fold(<int, Doggo>{},
-            (Map<int, Doggo> map, Doggo dog) => map..[dog.id] = dog),
-        _favorites = Set<Doggo>();
+  DogFavorites(this.dogList) : _favorites = Set<Doggo>();
   final Set<Doggo> _favorites;
   // Convenience method, even though you can look up this information with doggoLookup.values.
   final List<Doggo> dogList;
-
-  final Map<int, Doggo> doggoLookup;
-//TODO: EMILY I THINK YOU ONLY NEED FAVORITES.
 
   Set<Doggo> get favorites => _favorites;
 
