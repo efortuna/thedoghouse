@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -5,7 +7,7 @@ import 'package:simple_future_builder/simple_future_builder.dart';
 import 'package:the_doghouse/data.dart';
 import 'package:the_doghouse/model.dart';
 import 'package:transparent_image/transparent_image.dart';
-//import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 void main() async {
   List<Doggo> dogs = await AdoptableDoggos.fetchDoggos();
@@ -74,9 +76,9 @@ class DogList extends StatelessWidget {
           Navigator.push(
               context,
               MaterialPageRoute(
-              builder: (context) => FullDogView(
-                    dog: dog,
-                  ),
+                builder: (context) => FullDogView(
+                      dog: dog,
+                    ),
               ));
         },
         child: Text('Learn more about me!'),
@@ -122,7 +124,7 @@ class FullDogView extends StatefulWidget {
 
 // collapse
 class _FullDogViewState extends State<FullDogView> {
-//  Completer<WebViewController> _controller = Completer<WebViewController>();
+  Completer<WebViewController> _controller = Completer<WebViewController>();
 
   @override
   Widget build(BuildContext context) {
@@ -140,14 +142,14 @@ class _FullDogViewState extends State<FullDogView> {
 //          Menu(_controller.future),
 //        ],
       ),
-//      body: WebView(
-//        initialUrl: DogFavorites.dogUrl(widget.dog.id),
-//        javaScriptMode: JavaScriptMode.unrestricted,
-//        onWebViewCreated: (WebViewController webViewController) {
-//          _controller.complete(webViewController);
-//        },
-//      ),
-      floatingActionButton: _bookmarkButton(),
+      body: WebView(
+        initialUrl: DogFavorites.dogUrl(widget.dog.id),
+        javascriptMode: JavascriptMode.unrestricted,
+        onWebViewCreated: (WebViewController webViewController) {
+          _controller.complete(webViewController);
+        },
+      ),
+//      floatingActionButton: _bookmarkButton(),
     );
   }
 
