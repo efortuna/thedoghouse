@@ -34,7 +34,8 @@ class DogList extends StatelessWidget {
         leading: const Icon(FontAwesomeIcons.dog),
       ),
       body: ListView(
-        children: ScopedModel.of<DogFavorites>(context)
+        children: ScopedModel
+            .of<DogFavorites>(context)
             .dogList
             .map((dog) => _buildItem(dog, context))
             .toList(),
@@ -76,7 +77,8 @@ class DogList extends StatelessWidget {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => FullDogView(
+                builder: (context) =>
+                    FullDogView(
                       dog: dog,
                     ),
               ));
@@ -149,12 +151,17 @@ class _FullDogViewState extends State<FullDogView> {
           _controller.complete(webViewController);
         },
       ),
-//      floatingActionButton: _bookmarkButton(),
+      floatingActionButton: _bookmarkButton(),
     );
   }
 
   _bookmarkButton() {
-    return;
+    return FloatingActionButton(
+      onPressed: () {},
+      child: Icon(Icons.favorite),
+    );
+
+
 //    return SimpleFutureBuilder<WebViewController>(
 //      future: _controller.future,
 //      builder: (BuildContext context, WebViewController controller) {
@@ -219,7 +226,7 @@ class Menu extends StatelessWidget {
 //              ],
 //        );
 //      },
-        );
+    );
   }
 }
 
@@ -230,9 +237,11 @@ class FavoritesPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Favorite dogs')),
       body: ListView(
-          children: ScopedModel.of<DogFavorites>(context)
+          children: ScopedModel
+              .of<DogFavorites>(context)
               .favorites
-              .map((dog) => ListTile(
+              .map((dog) =>
+              ListTile(
                   title: Row(
                     children: <Widget>[DogImage(dog), Text(dog.name)],
                   ),
