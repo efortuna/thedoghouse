@@ -1,15 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:simple_future_builder/simple_future_builder.dart';
-import 'package:transparent_image/transparent_image.dart';
-import 'package:url_launcher/url_launcher.dart';
-//import 'package:webview_flutter/webview_flutter.dart';
-
 import 'package:the_doghouse/data.dart';
 import 'package:the_doghouse/model.dart';
+import 'package:transparent_image/transparent_image.dart';
+//import 'package:webview_flutter/webview_flutter.dart';
 
 void main() async {
   List<Doggo> dogs = await AdoptableDoggos.fetchDoggos();
@@ -52,10 +48,7 @@ class DogList extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
-            children: <Widget>[
-              DogImage(dog),
-              _dogDescription(dog, context),
-            ],
+            children: <Widget>[DogImage(dog), _dogDescription(dog, context)],
           ),
         ),
       ],
@@ -77,17 +70,15 @@ class DogList extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 24.0),
       child: RaisedButton(
-        onPressed:() {},
-//        onPressed: () async {
-//
-//          Navigator.push(
-//              context,
-//              MaterialPageRoute(
-//                builder: (context) => FullDogView(
-//                      dog: dog,
-//                    ),
-//              ));
-//        },
+        onPressed: () async {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+              builder: (context) => FullDogView(
+                    dog: dog,
+                  ),
+              ));
+        },
         child: Text('Learn more about me!'),
       ),
     );
@@ -97,7 +88,9 @@ class DogList extends StatelessWidget {
 // collapse
 class DogImage extends StatelessWidget {
   DogImage(this.dog);
+
   final Doggo dog;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -117,6 +110,7 @@ class DogImage extends StatelessWidget {
 }
 
 // collapse
+
 class FullDogView extends StatefulWidget {
   FullDogView({this.dog});
 
@@ -136,10 +130,6 @@ class _FullDogViewState extends State<FullDogView> {
       appBar: AppBar(
         title: Row(
           children: <Widget>[
-            const Icon(FontAwesomeIcons.bone),
-            // TODO: use some kind of box instead of Padding Widget
-            const Padding(padding: EdgeInsets.only(left: 20.0)),
-            const Text('Dog Stats', style: headerStyle),
           ],
         ),
 //        actions: <Widget>[
@@ -224,7 +214,7 @@ class Menu extends StatelessWidget {
 //              ],
 //        );
 //      },
-    );
+        );
   }
 }
 
@@ -238,7 +228,9 @@ class FavoritesPage extends StatelessWidget {
           children: ScopedModel.of<DogFavorites>(context)
               .favorites
               .map((dog) => ListTile(
-                  title: Row(children: <Widget>[DogImage(dog), Text(dog.name)],),
+                  title: Row(
+                    children: <Widget>[DogImage(dog), Text(dog.name)],
+                  ),
                   onTap: () => Navigator.pop(context, dog.id)))
               .toList()),
     );
