@@ -9,16 +9,19 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:the_doghouse/data.dart';
 import 'package:the_doghouse/model.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:simple_future_builder/simple_future_builder.dart';
 
-void main() => runApp(MaterialApp(
-      theme: ThemeData(
-        primaryColor: Colors.brown,
-        accentColor: Colors.deepOrange,
-        fontFamily: 'HappyMonkey',
-      ),
-      home: DogList(),
-    ));
+void main() async {
+  List<Doggo> dogs = await AdoptableDoggos.fetchDoggos();
+  return runApp(MaterialApp(
+    theme: ThemeData(
+      primaryColor: Colors.brown,
+      accentColor: Colors.deepOrange,
+      fontFamily: 'HappyMonkey',
+    ),
+    home: ScopedModel<DogFavorites>(
+        model: DogFavorites(dogs), child: DogList()),
+  ));
+}
 
 const headerStyle = TextStyle(fontFamily: 'FingerPaint');
 
@@ -30,13 +33,11 @@ class DogList extends StatelessWidget {
         title: Text("Who's in the dog house?", style: headerStyle),
         leading: const Icon(FontAwesomeIcons.dog),
       ),
-      body: SimpleFutureBuilder<List<Doggo>>(
-        future: AdoptableDoggos.fetchDoggos(),
-        builder: (context, data) => DogCache(
-            dogList: data,
-            child: ListView(
-              children: data.map((dog) => _buildItem(dog, context)).toList(),
-            )),
+      body: ListView(
+        children: ScopedModel.of<DogFavorites>(context)
+            .dogList
+            .map((dog) => _buildItem(dog, context))
+            .toList(),
       ),
     );
   }
@@ -91,6 +92,7 @@ class DogList extends StatelessWidget {
       padding: const EdgeInsets.only(top: 24.0),
       child: RaisedButton(
         onPressed: () async {
+          print('pressed');
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -102,16 +104,6 @@ class DogList extends StatelessWidget {
         child: Text('Learn more about me!'),
       ),
     );
-  }
-}
-
-class DogFavorites extends Model {
-  Set<Doggo> _favorites;
-  DogFavorites(this._favorites);
-  // TODO: convert URL to dog info...
-
-  add(Doggo dog) {
-    _favorites.add(dog);
   }
 }
 
@@ -141,12 +133,11 @@ class _FullDogViewState extends State<FullDogView> {
         ),
         actions: <Widget>[
           // TODO(efortuna): make this not a dropdown and just an icon?
-          Menu(_controller.future, () => _favorites),
+          Menu(_controller.future),
         ],
       ),
       body: WebView(
-        initialUrl: _dogUrl(),
-        // TODO(efortuna): This site requres javascript. Other adoption site that doesn't?
+        initialUrl: DogFavorites.dogUrl(widget.dog.id),
         javaScriptMode: JavaScriptMode.unrestricted,
         onWebViewCreated: (WebViewController webViewController) {
           _controller.complete(webViewController);
@@ -155,8 +146,6 @@ class _FullDogViewState extends State<FullDogView> {
       floatingActionButton: _bookmarkButton(),
     );
   }
-
-  String _dogUrl() => 'https://adoptapet.com/pet/${widget.dog.id}';
 
   _bookmarkButton() {
     return FutureBuilder<WebViewController>(
@@ -168,10 +157,8 @@ class _FullDogViewState extends State<FullDogView> {
             backgroundColor: Colors.deepOrange,
             onPressed: () async {
               var url = await controller.data.currentUrl();
-              final model =
-                  ScopedModel.of<DogFavorites>(context, rebuildOnChange: false);
-              // TODO: does Doggos need to become an inheritedWidget to access here?
-              model.add(urlToDoggo(url));
+              final model = ScopedModel.of<DogFavorites>(context);
+              model.favorites.add(model.urlToDog(url));
               Scaffold.of(context).showSnackBar(
                 SnackBar(content: Text('Favorited ${widget.dog.name}!')),
               );
@@ -186,13 +173,9 @@ class _FullDogViewState extends State<FullDogView> {
 }
 
 class Menu extends StatelessWidget {
-  Menu(this._webViewControllerFuture, this.favoritesAccessor);
+  Menu(this._webViewControllerFuture);
 
   final Future<WebViewController> _webViewControllerFuture;
-
-  // TODO(efortuna): Come up with a more elegant solution for an accessor to this than a callback.
-  // This should be state stuff.
-  final Function favoritesAccessor;
 
   @override
   Widget build(BuildContext context) {
@@ -208,12 +191,14 @@ class Menu extends StatelessWidget {
               await launch(
                   'mailto:?subject=Can we adopt this doggie&body=$url');
             } else {
-              var newUrl = await Navigator.push(context,
+              var newId = await Navigator.push(context,
                   MaterialPageRoute(builder: (BuildContext context) {
-                return FavoritesPage(favoritesAccessor());
+                return FavoritesPage();
               }));
               Scaffold.of(context).removeCurrentSnackBar();
-              if (newUrl != null) controller.data.loadUrl(newUrl);
+              if (newId != null) {
+                controller.data.loadUrl(DogFavorites.dogUrl(newId));
+              }
             }
           },
           itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
@@ -233,18 +218,17 @@ class Menu extends StatelessWidget {
 }
 
 class FavoritesPage extends StatelessWidget {
-  FavoritesPage(this.favorites);
-
-  final Set<String> favorites;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Favorite dogs')),
       body: ListView(
-          children: favorites
-              .map((url) => ListTile(
-                  title: Text(url), onTap: () => Navigator.pop(context, url)))
+          children: ScopedModel.of<DogFavorites>(context)
+              .favorites
+              .map((dog) => ListTile(
+                  // TODO: add picture, too.
+                  title: Text(dog.name),
+                  onTap: () => Navigator.pop(context, dog.id)))
               .toList()),
     );
   }
