@@ -2,24 +2,26 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'package:simple_future_builder/simple_future_builder.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'package:the_doghouse/data.dart';
 import 'package:the_doghouse/model.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 void main() async {
   List<Doggo> dogs = await AdoptableDoggos.fetchDoggos();
   return runApp(ScopedModel<DogFavorites>(
-      model: DogFavorites(dogs), child: MaterialApp(
-    theme: ThemeData(
-      primaryColor: Colors.brown,
-      accentColor: Colors.deepOrange,
-      fontFamily: 'HappyMonkey',
-    ),
-    home: DogList()),
+    model: DogFavorites(dogs),
+    child: MaterialApp(
+        theme: ThemeData(
+          primaryColor: Colors.brown,
+          accentColor: Colors.deepOrange,
+          fontFamily: 'HappyMonkey',
+        ),
+        home: DogList()),
   ));
 }
 
@@ -51,28 +53,12 @@ class DogList extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
             children: <Widget>[
-              _dogImage(dog),
+              DogImage(dog),
               _dogDescription(dog, context),
             ],
           ),
         ),
       ],
-    );
-  }
-
-  Widget _dogImage(Doggo dog) {
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Container(
-        height: 120.0,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16.0),
-          child: FadeInImage.memoryNetwork(
-            placeholder: kTransparentImage,
-            image: dog.media.images.first.url,
-          ),
-        ),
-      ),
     );
   }
 
@@ -92,7 +78,6 @@ class DogList extends StatelessWidget {
       padding: const EdgeInsets.only(top: 24.0),
       child: RaisedButton(
         onPressed: () async {
-          print('pressed');
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -148,25 +133,25 @@ class _FullDogViewState extends State<FullDogView> {
   }
 
   _bookmarkButton() {
-    return FutureBuilder<WebViewController>(
+    return SimpleFutureBuilder<WebViewController>(
       future: _controller.future,
-      builder:
-          (BuildContext context, AsyncSnapshot<WebViewController> controller) {
-        if (controller.hasData) {
-          return FloatingActionButton(
-            backgroundColor: Colors.deepOrange,
-            onPressed: () async {
-              var url = await controller.data.currentUrl();
-              final model = ScopedModel.of<DogFavorites>(context);
-              model.favorites.add(model.urlToDog(url));
-              Scaffold.of(context).showSnackBar(
-                SnackBar(content: Text('Favorited ${widget.dog.name}!')),
-              );
-            },
-            child: const Icon(Icons.favorite),
-          );
-        }
-        return Container();
+      builder: (BuildContext context, WebViewController controller) {
+        return FloatingActionButton(
+          backgroundColor: Colors.deepOrange,
+          onPressed: () async {
+            var url = await controller.currentUrl();
+            final model = ScopedModel.of<DogFavorites>(context);
+            // Technically the user could have moved away from the original
+            // dog but we're going to ignore that because then we might
+            // not have url -> dog mapping if it didn't come in our original
+            // set.
+            model.addFavorite(widget.dog);
+            Scaffold.of(context).showSnackBar(
+              SnackBar(content: Text('Favorited ${widget.dog.name}!')),
+            );
+          },
+          child: const Icon(Icons.favorite),
+        );
       },
     );
   }
@@ -179,15 +164,13 @@ class Menu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    return SimpleFutureBuilder(
       future: _webViewControllerFuture,
-      builder:
-          (BuildContext context, AsyncSnapshot<WebViewController> controller) {
-        if (!controller.hasData) return Container();
+      builder: (BuildContext context, WebViewController controller) {
         return PopupMenuButton<String>(
           onSelected: (String value) async {
             if (value == 'Email link') {
-              var url = await controller.data.currentUrl();
+              var url = await controller.currentUrl();
               await launch(
                   'mailto:?subject=Can we adopt this doggie&body=$url');
             } else {
@@ -197,7 +180,7 @@ class Menu extends StatelessWidget {
               }));
               Scaffold.of(context).removeCurrentSnackBar();
               if (newId != null) {
-                controller.data.loadUrl(DogFavorites.dogUrl(newId));
+                controller.loadUrl(DogFavorites.dogUrl(newId));
               }
             }
           },
@@ -217,6 +200,27 @@ class Menu extends StatelessWidget {
   }
 }
 
+class DogImage extends StatelessWidget {
+  DogImage(this.dog);
+  Doggo dog;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Container(
+        height: 120.0,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16.0),
+          child: FadeInImage.memoryNetwork(
+            placeholder: kTransparentImage,
+            image: dog.media.images.first.url,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class FavoritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -226,8 +230,7 @@ class FavoritesPage extends StatelessWidget {
           children: ScopedModel.of<DogFavorites>(context)
               .favorites
               .map((dog) => ListTile(
-                  // TODO: add picture, too.
-                  title: Text(dog.name),
+                  title: Row(children: <Widget>[DogImage(dog), Text(dog.name)],),
                   onTap: () => Navigator.pop(context, dog.id)))
               .toList()),
     );

@@ -20,18 +20,19 @@ class DogFavorites extends Model {
   DogFavorites(this.dogList)
       : doggoLookup = dogList.fold(<int, Doggo>{},
             (Map<int, Doggo> map, Doggo dog) => map..[dog.id] = dog),
-        favorites = Set<Doggo>();
-  final Set<Doggo> favorites;
+        _favorites = Set<Doggo>();
+  final Set<Doggo> _favorites;
   // Convenience method, even though you can look up this information with doggoLookup.values.
   final List<Doggo> dogList;
 
   final Map<int, Doggo> doggoLookup;
+//TODO: EMILY I THINK YOU ONLY NEED FAVORITES.
 
-  Doggo urlToDog(String url) {
-    print('the URL is: ');
-    // TODO actually parse url to get id.
-    var id = 3;
-    return doggoLookup[id];
+  Set<Doggo> get favorites => _favorites;
+
+  addFavorite(Doggo dog) {
+    _favorites.add(dog);
+    notifyListeners();
   }
 
   static String dogUrl(int id) => 'https://adoptapet.com/pet/$id';
