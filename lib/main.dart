@@ -12,14 +12,14 @@ import 'package:scoped_model/scoped_model.dart';
 
 void main() async {
   List<Doggo> dogs = await AdoptableDoggos.fetchDoggos();
-  return runApp(MaterialApp(
+  return runApp(ScopedModel<DogFavorites>(
+      model: DogFavorites(dogs), child: MaterialApp(
     theme: ThemeData(
       primaryColor: Colors.brown,
       accentColor: Colors.deepOrange,
       fontFamily: 'HappyMonkey',
     ),
-    home: ScopedModel<DogFavorites>(
-        model: DogFavorites(dogs), child: DogList()),
+    home: DogList()),
   ));
 }
 
