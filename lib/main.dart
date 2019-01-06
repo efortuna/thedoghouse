@@ -123,7 +123,7 @@ class _FullDogViewState extends State<FullDogView> {
       ),
       body: WebView(
         initialUrl: DogFavorites.dogUrl(widget.dog.id),
-        javaScriptMode: JavaScriptMode.unrestricted,
+        javascriptMode: JavascriptMode.unrestricted,
         onWebViewCreated: (WebViewController webViewController) {
           _controller.complete(webViewController);
         },
@@ -202,7 +202,7 @@ class Menu extends StatelessWidget {
 
 class DogImage extends StatelessWidget {
   DogImage(this.dog);
-  Doggo dog;
+  final Doggo dog;
   @override
   Widget build(BuildContext context) {
     return Padding(
