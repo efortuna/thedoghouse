@@ -12,15 +12,16 @@ import 'package:the_doghouse/model.dart';
 
 void main() async {
   List<Doggo> dogs = await AdoptableDoggos.fetchDoggos();
-  return runApp(ScopedModel<DogFavorites>(
-    model: DogFavorites(dogs),
+  return runApp(ScopedModel<AdoptableDoggos>(
+    model: AdoptableDoggos(dogs),
     child: MaterialApp(
-        theme: ThemeData(
-          primaryColor: Colors.brown,
-          accentColor: Colors.deepOrange,
-          fontFamily: 'HappyMonkey',
-        ),
-        home: DogList()),
+      theme: ThemeData(
+        primaryColor: Colors.brown,
+        accentColor: Colors.deepOrange,
+        fontFamily: 'HappyMonkey',
+      ),
+      home: DogList(),
+    ),
   ));
 }
 
@@ -33,9 +34,10 @@ class DogList extends StatelessWidget {
       appBar: AppBar(
         title: Text("Who's in the dog house?", style: headerStyle),
         leading: const Icon(FontAwesomeIcons.bone),
+        actions: <Widget>[FavoritesButton()],
       ),
       body: ListView(
-        children: ScopedModel.of<DogFavorites>(context)
+        children: ScopedModel.of<AdoptableDoggos>(context)
             .dogList
             .map((dog) => DogTile(dog))
             .toList(),
@@ -98,7 +100,7 @@ class DogTile extends StatelessWidget {
 }
 
 class FullDogView extends StatelessWidget {
-  FullDogView({this.dog}) : _controller = Completer<WebViewController>();
+  FullDogView({@required this.dog}) : _controller = Completer<WebViewController>();
 
   final Doggo dog;
   final Completer<WebViewController> _controller;
@@ -108,12 +110,10 @@ class FullDogView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Dog Stats: ${dog.name}', style: headerStyle),
-        actions: <Widget>[
-          FavoritesButton(_controller.future),
-        ],
+        actions: <Widget>[FavoritesButton()],
       ),
       body: WebView(
-        initialUrl: DogFavorites.dogUrl(dog.id),
+        initialUrl: AdoptableDoggos.dogUrl(dog.id),
         javascriptMode: JavascriptMode.unrestricted,
         onWebViewCreated: (WebViewController webViewController) {
           _controller.complete(webViewController);
@@ -128,9 +128,8 @@ class FullDogView extends StatelessWidget {
       future: _controller.future,
       builder: (BuildContext context, WebViewController controller) {
         return FloatingActionButton(
-          backgroundColor: Colors.deepOrange,
           onPressed: () async {
-            final model = ScopedModel.of<DogFavorites>(context);
+            final model = ScopedModel.of<AdoptableDoggos>(context);
             // Technically the user could have moved away from the original
             // dog but we're going to ignore that because then we might
             // not have url -> dog mapping if it didn't come in our original
@@ -148,33 +147,36 @@ class FullDogView extends StatelessWidget {
 }
 
 class FavoritesButton extends StatelessWidget {
-  FavoritesButton(this._webViewControllerFuture);
-
-  final Future<WebViewController> _webViewControllerFuture;
-
   @override
   Widget build(BuildContext context) {
-    return SimpleFutureBuilder(
-      future: _webViewControllerFuture,
-      builder: (BuildContext context, WebViewController controller) {
-        return GestureDetector(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Row(
-              children: <Widget>[
-                const Icon(FontAwesomeIcons.dog),
-                Text('3', style: TextStyle(fontSize: 24, color: Colors.red)),
-              ],
-            ),
-          ),
-          onTap: () async {
-            await Navigator.push(context,
-                MaterialPageRoute(builder: (context) => FavoritesPage()
-            ));
-            Scaffold.of(context).removeCurrentSnackBar();
-          },
-        );
-      },
+    return IconButton(
+      icon: Stack(
+        overflow: Overflow.visible,
+        children: <Widget>[
+        const Icon(FontAwesomeIcons.dog),
+        Positioned(
+          top: 10.0,
+          right: -10.0,
+          child: Material(
+              type: MaterialType.circle,
+              color: Colors.deepOrange,
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Text(
+                  ScopedModel.of<AdoptableDoggos>(context).favorites.length.toString(),
+                  style: TextStyle(
+                    fontSize: 13.0,
+                    color: Colors.white,//widget.badgeTextColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )),
+        )
+      ],),
+      onPressed: () => Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => FavoritesPage()),
+              (route) => route.isFirst),
     );
   }
 }
@@ -206,7 +208,7 @@ class FavoritesPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Favorite dogs')),
       body: ListView(
-          children: ScopedModel.of<DogFavorites>(context)
+          children: ScopedModel.of<AdoptableDoggos>(context)
               .favorites
               .map((dog) => ListTile(
                   title: Row(
