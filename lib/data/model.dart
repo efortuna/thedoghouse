@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'model.g.dart';
+part 'package:the_doghouse/data/model.g.dart';
 
 @JsonSerializable()
 class Response {

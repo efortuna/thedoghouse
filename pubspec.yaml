@@ -18,12 +18,10 @@ dependencies:
 
   webview_flutter: ^0.2.0
   http: ^0.12.0
-  url_launcher: ^4.0.2
   rxdart: ^0.19.0
   font_awesome_flutter: ^8.2.0
   json_annotation: ^2.0.0
   scoped_model: ^1.0.1
-  simple_future_builder: ^1.0.1
 
   transparent_image: ^0.1.0
 
@@ -50,15 +48,12 @@ flutter:
   uses-material-design: true
 
   fonts:
-    - family: IndieFlower
-      fonts:
-      - asset: fonts/IndieFlower.ttf
     - family: FingerPaint
       fonts:
       - asset: fonts/FingerPaint-Regular.ttf
-    - family: PatrickHand
+    - family: ChelseaMarket
       fonts:
-      - asset: fonts/PatrickHand-Regular.ttf
+      - asset: fonts/ChelseaMarket-Regular.ttf
     - family: HappyMonkey
       fonts:
       - asset: fonts/HappyMonkey-Regular.ttf
