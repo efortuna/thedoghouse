@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
-import 'package:the_doghouse/model.dart';
+import 'package:the_doghouse/data/model.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class AdoptableDoggos extends Model {
