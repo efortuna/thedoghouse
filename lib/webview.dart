@@ -22,6 +22,14 @@ class FullDogView extends StatelessWidget {
         title: Text('Dog Stats: ${dog.name}', style: headerStyle),
         actions: <Widget>[FavoritesButton()],
       ),
+      body: WebView(
+        initialUrl: AdoptableDoggos.dogUrl(dog.id),
+        javascriptMode: JavascriptMode.unrestricted,
+        onWebViewCreated: (WebViewController webViewController) {
+          _controller.complete(webViewController);
+        },
+      ),
+      floatingActionButton: _bookmarkButton(context),
     );
   }
 
