@@ -37,8 +37,8 @@ class DogList extends StatelessWidget {
   }
 }
 
-class DogTile extends StatelessWidget {
-  DogTile(this.dog);
+class DogListItem extends StatelessWidget {
+  DogListItem(this.dog);
   final Doggo dog;
 
   @override

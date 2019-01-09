@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:the_doghouse/data/data.dart';
+import 'package:simple_future_builder/simple_future_builder.dart';
 import 'package:the_doghouse/data/model.dart';
 import 'package:the_doghouse/main.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -26,17 +27,18 @@ class FullDogView extends StatelessWidget {
   }
 
   _bookmarkButton(BuildContext context) {
-    return FloatingActionButton(
-      child: const Icon(Icons.favorite),
-      onPressed: () async {
-        final model = ScopedModel.of<AdoptableDoggos>(context);
-        // Technically the user could have moved away from the original
-        // dog but we're going to ignore that because then we might
-        // not have url -> dog mapping if it didn't come in our original
-        // set.
-        model.addFavorite(dog);
-        Scaffold.of(context).showSnackBar(
-          SnackBar(content: Text('Favorited ${dog.name}!')),
+    return SimpleFutureBuilder<WebViewController>(
+      future: _controller.future,
+      builder: (BuildContext context, _) {
+        return FloatingActionButton(
+          child: const Icon(Icons.favorite),
+          onPressed: () async {
+            final model = ScopedModel.of<AdoptableDoggos>(context);
+            model.addFavorite(dog);
+            Scaffold.of(context).showSnackBar(
+              SnackBar(content: Text('Favorited ${dog.name}!')),
+            );
+          },
         );
       },
     );
