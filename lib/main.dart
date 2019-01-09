@@ -36,15 +36,15 @@ class DogList extends StatelessWidget {
       body: ListView(
         children: ScopedModel.of<AdoptableDoggos>(context)
             .dogList
-            .map((dog) => DogTile(dog))
+            .map((dog) => DogListItem(dog))
             .toList(),
       ),
     );
   }
 }
 
-class DogTile extends StatelessWidget {
-  DogTile(this.dog);
+class DogListItem extends StatelessWidget {
+  DogListItem(this.dog);
   final Doggo dog;
 
   @override
