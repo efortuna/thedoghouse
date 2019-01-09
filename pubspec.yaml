@@ -52,9 +52,6 @@ flutter:
     - family: FingerPaint
       fonts:
       - asset: fonts/FingerPaint-Regular.ttf
-    - family: ChelseaMarket
-      fonts:
-      - asset: fonts/ChelseaMarket-Regular.ttf
     - family: HappyMonkey
       fonts:
       - asset: fonts/HappyMonkey-Regular.ttf
