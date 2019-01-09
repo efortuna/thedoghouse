@@ -81,17 +81,12 @@ class DogListItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 24.0),
       child: RaisedButton(
-        child: Text('Learn more about me!'),
-        onPressed: () async {
-          Navigator.push(
+          child: Text('Learn more about me!'),
+          onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => FullDogView(
-                      dog: dog,
-                    ),
-              ));
-        },
-      ),
+                builder: (context) => FullDogView(dog: dog),
+              ))),
     );
   }
 }
