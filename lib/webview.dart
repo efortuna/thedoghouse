@@ -82,7 +82,10 @@ class FavoritesButton extends StatelessWidget {
           )
         ],
       ),
-      onPressed: () {},
+      onPressed: () => Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => FavoritesPage()),
+              (route) => route.isFirst),
     );
   }
 }
