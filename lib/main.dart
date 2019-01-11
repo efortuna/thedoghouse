@@ -29,10 +29,14 @@ class DogList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Icon(FontAwesomeIcons.bone),
         title: Text("Who's in the dog house?", style: headerStyle),
         actions: <Widget>[FavoritesButton()],
       ),
-      body: ListView(children: <Widget>[]),
+      body: ListView(children: ScopedModel.of<AdoptableDoggos>(context)
+         .dogList
+         .map((dog) => DogListItem(dog))
+         .toList()),
     );
   }
 }
@@ -51,6 +55,7 @@ class DogListItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
             children: <Widget>[
+              DogImage(dog),
               _dogDescription(dog, context),
             ],
           ),
@@ -75,7 +80,11 @@ class DogListItem extends StatelessWidget {
       padding: const EdgeInsets.only(top: 24.0),
       child: RaisedButton(
         child: Text('Learn more!'),
-        onPressed: () {},
+        onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FullDogView(dog: dog),
+                      )),
       ),
     );
   }
