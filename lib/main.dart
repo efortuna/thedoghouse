@@ -81,7 +81,7 @@ class DogListItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 24.0),
       child: RaisedButton(
-          child: Text('Learn more about me!'),
+          child: Text('Learn more!'),
           onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(

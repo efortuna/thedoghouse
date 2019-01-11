@@ -101,7 +101,7 @@ class FavoritesButton extends StatelessWidget {
                       .toString(),
                   style: TextStyle(
                     fontSize: 13.0,
-                    color: Colors.white, //widget.badgeTextColor,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 )
