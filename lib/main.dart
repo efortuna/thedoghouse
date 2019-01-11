@@ -17,7 +17,6 @@ void main() async {
         accentColor: Colors.deepOrange,
         fontFamily: 'HappyMonkey',
       ),
-      home: DogList(),
     ),
   ));
 }
@@ -30,15 +29,9 @@ class DogList extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Who's in the dog house?", style: headerStyle),
-        leading: const Icon(FontAwesomeIcons.bone),
         actions: <Widget>[FavoritesButton()],
       ),
-      body: ListView(
-        children: ScopedModel.of<AdoptableDoggos>(context)
-            .dogList
-            .map((dog) => DogListItem(dog))
-            .toList(),
-      ),
+      body: ListView(),
     );
   }
 }
@@ -57,7 +50,6 @@ class DogListItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
             children: <Widget>[
-              DogImage(dog),
               _dogDescription(dog, context),
             ],
           ),
@@ -82,11 +74,8 @@ class DogListItem extends StatelessWidget {
       padding: const EdgeInsets.only(top: 24.0),
       child: RaisedButton(
           child: Text('Learn more!'),
-          onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => FullDogView(dog: dog),
-              ))),
+          onPressed: () {}
+          ),
     );
   }
 }

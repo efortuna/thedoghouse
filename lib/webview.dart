@@ -23,14 +23,6 @@ class FullDogView extends StatelessWidget {
         title: Text('Dog Stats: ${dog.name}', style: headerStyle),
         actions: <Widget>[FavoritesButton()],
       ),
-      body: WebView(
-        initialUrl: AdoptableDoggos.dogUrl(dog.id),
-        javascriptMode: JavascriptMode.unrestricted,
-        onWebViewCreated: (WebViewController webViewController) {
-          _controller.complete(webViewController);
-        },
-      ),
-      floatingActionButton: _bookmarkButton(),
     );
   }
 
@@ -62,19 +54,7 @@ class FavoritesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Favorite dogs')),
-      body: ListView(
-          children: ScopedModel.of<AdoptableDoggos>(context)
-              .favorites
-              .map((dog) => ListTile(
-              title: Row(
-                children: <Widget>[DogImage(dog), Text(dog.name)],
-              ),
-              onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => FullDogView(dog: dog),
-                  ))))
-              .toList()),
+      body: ListView(),
     );
   }
 }
@@ -95,10 +75,7 @@ class FavoritesButton extends StatelessWidget {
               children: <Widget>[
                 Icon(Icons.favorite, color: Colors.deepOrange),
                 Text(
-                  ScopedModel.of<AdoptableDoggos>(context, rebuildOnChange: true)
-                      .favorites
-                      .length
-                      .toString(),
+                  '',
                   style: TextStyle(
                     fontSize: 13.0,
                     color: Colors.white,
