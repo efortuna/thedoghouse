@@ -30,9 +30,9 @@ class DogList extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Who's in the dog house?", style: headerStyle),
+        actions: <Widget>[FavoritesButton()],
       ),
-      body: ListView(children: <Widget>[],
-      ),
+      body: ListView(children: <Widget>[]),
     );
   }
 }
@@ -45,6 +45,7 @@ class DogListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExpansionTile(
       title: Text('${dog.name}: ${dog.breeds.primaryBreedName}'),
+      leading: Icon(FontAwesomeIcons.paw),
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -73,7 +74,7 @@ class DogListItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 24.0),
       child: RaisedButton(
-        child: Text('Learn more about me!'),
+        child: Text('Learn more!'),
         onPressed: () {},
       ),
     );

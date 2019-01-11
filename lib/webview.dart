@@ -49,8 +49,20 @@ class FavoritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Favorite dogs')),
-    );
+        appBar: AppBar(title: Text('Favorite dogs')),
+        body: ListView(
+            children: ScopedModel.of<AdoptableDoggos>(context)
+                .favorites
+                .map((dog) => ListTile(
+                    title: Row(
+                      children: <Widget>[DogImage(dog), Text(dog.name)],
+                    ),
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FullDogView(dog: dog),
+                        ))))
+                .toList()));
   }
 }
 
@@ -69,14 +81,6 @@ class FavoritesButton extends StatelessWidget {
               alignment: AlignmentDirectional.center,
               children: <Widget>[
                 Icon(Icons.favorite, color: Colors.deepOrange),
-                Text(
-                  '',
-                  style: TextStyle(
-                    fontSize: 13.0,
-                    color: Colors.white, //widget.badgeTextColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                )
               ],
             ),
           )
@@ -85,7 +89,7 @@ class FavoritesButton extends StatelessWidget {
       onPressed: () => Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => FavoritesPage()),
-              (route) => route.isFirst),
+          (route) => route.isFirst),
     );
   }
 }
