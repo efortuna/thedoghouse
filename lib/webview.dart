@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:simple_future_builder/simple_future_builder.dart';
 import 'package:the_doghouse/data/data.dart';
 import 'package:the_doghouse/data/model.dart';
 import 'package:the_doghouse/main.dart';
@@ -35,9 +34,8 @@ class FullDogView extends StatelessWidget {
   }
 
   _bookmarkButton() {
-    return SimpleFutureBuilder<WebViewController>(
-      future: _controller.future,
-      builder: (BuildContext context, _) {
+    return Builder(
+      builder: (BuildContext context) {
         return FloatingActionButton(
           child: const Icon(Icons.favorite),
           onPressed: () async {
