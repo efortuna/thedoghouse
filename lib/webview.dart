@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:the_doghouse/data/data.dart';
-import 'package:simple_future_builder/simple_future_builder.dart';
 import 'package:the_doghouse/data/model.dart';
 import 'package:the_doghouse/main.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -26,15 +25,18 @@ class FullDogView extends StatelessWidget {
     );
   }
 
-  _bookmarkButton(BuildContext context) {
-    return SimpleFutureBuilder<WebViewController>(
+  _bookmarkButton() {
+    return FutureBuilder<WebViewController>(
       future: _controller.future,
-      builder: (BuildContext context, _) {
+      builder:
+          (BuildContext context, AsyncSnapshot<WebViewController> controller) {
         return FloatingActionButton(
           child: const Icon(Icons.favorite),
           onPressed: () async {
             final model = ScopedModel.of<AdoptableDoggos>(context);
-            model.addFavorite(dog);
+            var foundDog =
+                AdoptableDoggos.urlToDog(await controller.data.currentUrl());
+            model.addFavorite(foundDog ?? dog);
             Scaffold.of(context).showSnackBar(
               SnackBar(content: Text('Favorited ${dog.name}!')),
             );
