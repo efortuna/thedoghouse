@@ -83,6 +83,18 @@ class FavoritesButton extends StatelessWidget {
               alignment: AlignmentDirectional.center,
               children: <Widget>[
                 Icon(Icons.favorite, color: Colors.deepOrange),
+                Text(
+                  ScopedModel.of<AdoptableDoggos>(context,
+                          rebuildOnChange: true)
+                      .favorites
+                      .length
+                      .toString(),
+                  style: TextStyle(
+                    fontSize: 13.0,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
               ],
             ),
           )
