@@ -25,14 +25,18 @@ class FullDogView extends StatelessWidget {
     );
   }
 
-  _bookmarkButton(BuildContext context) {
-    return Builder(
-      builder: (BuildContext context) {
+  _bookmarkButton() {
+    return FutureBuilder<WebViewController>(
+      future: _controller.future,
+      builder:
+          (BuildContext context, AsyncSnapshot<WebViewController> controller) {
         return FloatingActionButton(
           child: const Icon(Icons.favorite),
           onPressed: () async {
             final model = ScopedModel.of<AdoptableDoggos>(context);
-            model.addFavorite(dog);
+            var foundDog =
+                AdoptableDoggos.urlToDog(await controller.data.currentUrl());
+            model.addFavorite(foundDog ?? dog);
             Scaffold.of(context).showSnackBar(
               SnackBar(content: Text('Favorited ${dog.name}!')),
             );
