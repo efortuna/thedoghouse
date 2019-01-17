@@ -80,11 +80,7 @@ class DogListItem extends StatelessWidget {
       padding: const EdgeInsets.only(top: 24.0),
       child: RaisedButton(
         child: Text('Learn more!'),
-        onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FullDogView(dog: dog),
-                      )),
+        onPressed: () {},
       ),
     );
   }
