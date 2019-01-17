@@ -63,11 +63,7 @@ class FavoritesButton extends StatelessWidget {
               children: <Widget>[
                 Icon(Icons.favorite, color: Colors.deepOrange),
                 Text(
-                  ScopedModel.of<AdoptableDoggos>(context,
-                      rebuildOnChange: true)
-                      .favorites
-                      .length
-                      .toString(),
+                  '',
                   style: TextStyle(
                     fontSize: 13.0,
                     color: Colors.white,
