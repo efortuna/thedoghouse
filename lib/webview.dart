@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:simple_future_builder/simple_future_builder.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:the_doghouse/data/data.dart';
 import 'package:the_doghouse/data/model.dart';
@@ -27,16 +26,16 @@ class FullDogView extends StatelessWidget {
   }
 
   _bookmarkButton() {
-    return SimpleFutureBuilder<WebViewController>(
+    return FutureBuilder<WebViewController>(
       future: _controller.future,
       builder:
-          (BuildContext context, WebViewController controller) {
+          (BuildContext context, AsyncSnapshot<WebViewController> controller) {
         return FloatingActionButton(
           child: const Icon(Icons.favorite),
           onPressed: () async {
             final model = ScopedModel.of<AdoptableDoggos>(context);
             var foundDog =
-                AdoptableDoggos.urlToDog(await controller.currentUrl());
+                AdoptableDoggos.urlToDog(await controller.data.currentUrl());
             model.addFavorite(foundDog ?? dog);
             Scaffold.of(context).showSnackBar(
               SnackBar(content: Text('Favorited ${dog.name}!')),
@@ -44,6 +43,42 @@ class FullDogView extends StatelessWidget {
           },
         );
       },
+    );
+  }
+}
+
+class FavoritesButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Stack(
+        overflow: Overflow.visible,
+        children: <Widget>[
+          const Icon(FontAwesomeIcons.dog),
+          Positioned(
+            top: 10.0,
+            right: -10.0,
+            child: Stack(
+              alignment: AlignmentDirectional.center,
+              children: <Widget>[
+                Icon(Icons.favorite, color: Colors.deepOrange),
+                Text(
+                  '',
+                  style: TextStyle(
+                    fontSize: 13.0,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+      onPressed: () => Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => FavoritesPage()),
+              (route) => route.isFirst),
     );
   }
 }
@@ -66,45 +101,5 @@ class FavoritesPage extends StatelessWidget {
                           builder: (context) => FullDogView(dog: dog),
                         ))))
                 .toList()));
-  }
-}
-
-class FavoritesButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: Stack(
-        overflow: Overflow.visible,
-        children: <Widget>[
-          const Icon(FontAwesomeIcons.dog),
-          Positioned(
-            top: 10.0,
-            right: -10.0,
-            child: Stack(
-              alignment: AlignmentDirectional.center,
-              children: <Widget>[
-                Icon(Icons.favorite, color: Colors.deepOrange),
-                Text(
-                  ScopedModel.of<AdoptableDoggos>(context,
-                          rebuildOnChange: true)
-                      .favorites
-                      .length
-                      .toString(),
-                  style: TextStyle(
-                    fontSize: 13.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                )
-              ],
-            ),
-          )
-        ],
-      ),
-      onPressed: () => Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => FavoritesPage()),
-          (route) => route.isFirst),
-    );
   }
 }
