@@ -33,10 +33,7 @@ class DogList extends StatelessWidget {
         actions: <Widget>[FavoritesButton()],
       ),
       body: ListView(
-          children: ScopedModel.of<AdoptableDoggos>(context)
-              .dogList
-              .map((Doggo d) => DogListItem(d))
-              .toList()),
+          children: <Widget>[]),
     );
   }
 }
