@@ -32,7 +32,11 @@ class DogList extends StatelessWidget {
         title: Text("Who's in the dog house?", style: headerStyle),
         actions: <Widget>[FavoritesButton()],
       ),
-      body: ListView(children: <Widget>[]),
+      body: ListView(
+          children: ScopedModel.of<AdoptableDoggos>(context)
+              .dogList
+              .map((Doggo d) => DogListItem(d))
+              .toList()),
     );
   }
 }
